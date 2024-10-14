@@ -1,0 +1,33 @@
+
+#Admin-Data-Container{
+    margin: auto;
+    padding: 25px;
+    transform: translateX(30px); 
+}
+
+#Admin-Data-Container .searchBar{
+    display: grid;
+    grid-column: auto;  
+    margin: auto; 
+    padding: 10px; 
+
+}
+
+.searchBar input{
+    border: 1px solid rgb(0, 0, 0, 0.1);
+    width: 90%; 
+    height: 50px; 
+}
+
+.searchBar label{
+    padding-right: 5px; 
+}
+
+.data-table tbody{
+    cursor: pointer;
+    width:1000px;  
+}
+
+.data-table tr:hover{
+    background-color: #dacbcb; 
+}

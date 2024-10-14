@@ -1,0 +1,30 @@
+{
+    "parser": "@babel/eslint-parser",
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2021,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "requireConfigFile": false  // Add this to avoid needing a separate Babel config
+    },
+    "plugins": ["react"],
+    "rules": {
+      "no-unused-vars": "warn"  // Warn for unused variables
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  }
+  

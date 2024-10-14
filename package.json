@@ -1,0 +1,87 @@
+{
+  "name": "flashbox_frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^5.16.5",
+    "@mui/material": "^5.16.5",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.16.0",
+    "all": "^0.0.0",
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "classnames": "^2.5.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "emailjs-com": "^3.2.0",
+    "headroom.js": "0.12.0",
+    "moment": "2.29.4",
+    "nouislider": "15.4.0",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.4",
+    "react-data-table-component": "^7.6.2",
+    "react-datetime": "3.2.0",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.23.1",
+    "react-scripts": "^5.0.1",
+    "react-transition-group": "^4.4.5",
+    "reactstrap": "^9.2.2",
+    "recharts": "^2.12.7",
+    "sass": "^1.62.1",
+    "sharp": "^0.33.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "scss": "sass --watch src/assets/css/custom.scss src/assets/css/custom.css",
+    "lint": "eslint ./src --ext .js,.jsx"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "./src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "raineecorn@github.com"
+  },
+  "keywords": [
+    "flashbox_fe"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.25.8",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@fullhuman/postcss-purgecss": "^6.0.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "prettier": "3.3.2"
+  }
+}

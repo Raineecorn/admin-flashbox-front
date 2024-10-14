@@ -1,0 +1,99 @@
+/* CreateData.css */
+#form-container {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    border-radius: 10px; 
+    border: 1px solid rgb(207 207 207);
+    box-shadow: 5px;
+    background-color: white;
+    padding: 20px 50px 20px 50px;
+    margin: auto;
+    transform: translate(30%);
+}
+
+#form-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.ContainersDiv {
+    flex-direction: column; 
+    width: max-content; 
+}
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.form-left, .form-right {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.form-right{
+    margin-left: 10px; 
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#form-container .ContainersDiv input {
+    margin: auto; 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 95%;
+}
+
+.remarkStatus input {
+    margin: auto; 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 50px; 
+}
+
+#form-container .remarkStatusComment input{
+    height: 70px; 
+    width: 100%; 
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px; 
+    resize: none; 
+}
+
+.button-submit-form{
+    margin-top: 50px; 
+}
+
+#form-container .button-submit-form button {
+    margin: auto;
+    padding: 10px 20px;
+    color: white;
+    background-color: #FF3131;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 30%;
+}
+
+
+
+.button-submit-form button:hover {
+    background-color: #FF3131;
+}

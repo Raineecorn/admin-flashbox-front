@@ -1,0 +1,12 @@
+.retry-button {
+    background-color: #ffa500;  /* Orange color for visibility */
+    color: white;
+    padding: 8px 16px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  
