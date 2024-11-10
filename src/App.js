@@ -10,6 +10,7 @@ import UpdateTracking from './frontPages/AdminDataViewer/AdminComponents/sidebar
 import CustomerLists from './frontPages/AdminDataViewer/AdminComponents/sidebar/DataViewer.js';
 import UpdatePage from './frontPages/AdminDataViewer/AdminComponents/sidebar/UpdatePage.js';
 import UpdateTrackingStatus from './frontPages/AdminDataViewer/AdminComponents/sidebar/UpdateTrackingStatus.js'
+import CreateTrackingData from './frontPages/AdminDataViewer/AdminComponents/sidebar/CreateTrackingData.js';
 import { ThemeProvider } from '@mui/material/styles/index.js';
 import theme from './components/theme/colorTheme.js'
 
@@ -22,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/login-admin" element={<AdminLogin/>} />
             <Route path="/" element={<AdminLanding />}>
-            <Route path="add-customer" element={<AddCustomer />} />
+            <Route path="add-customer" element={<CreateTrackingData />} />
             <Route path="update-tracking" element={<UpdateTracking />} />
             <Route path="customer-lists" element={<CustomerLists />} />
             <Route path="update-page" element={<UpdatePage />} />

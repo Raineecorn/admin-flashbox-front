@@ -31,27 +31,27 @@ function Sidebar({ openSidebarToggle }) {
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard/add-customer" className="text-white d-flex align-items-center">
+          <Link to="/add-customer" className="text-white d-flex align-items-center">
             <BsPersonAdd className="me-2" /> Add Customer
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard/update-tracking" className="text-white d-flex align-items-center">
+          <Link to="/update-tracking" className="text-white d-flex align-items-center">
             <GrDocumentUpdate className="me-2" /> Update Tracking
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard/customer-lists" className="text-white d-flex align-items-center">
+          <Link to="/customer-lists" className="text-white d-flex align-items-center">
             <BsPeopleFill className="me-2" /> Customers Lists
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard/update-status" className="text-white d-flex align-items-center">
+          <Link to="/update-status" className="text-white d-flex align-items-center">
             <BsMenuButtonWideFill className="me-2" /> Tracking Status Update
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard/sample" className="text-white d-flex align-items-center">
+          <Link to="/sample" className="text-white d-flex align-items-center">
             <BsListCheck className="me-2" /> Tracking Inventory
           </Link>
         </li>
