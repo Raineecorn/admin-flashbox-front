@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types'; // Import PropTypes
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
+import PropTypes from 'prop-types';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const initialFormState = {
+  trackingNumber: '',
+  date: '',
+  senderName: '',
+  SendercontactNumber: '',
+  recieverName: '',
+  ReceivercontactNumber: '',
+  senderEmail: '',
+  receiverEmail: '',
+  items: '',
+  senderAddress: '',
+  receiverAddress: '',
+  noOfBox: '',
+  boxSize: '',
+  noOfKg: '',
+  dateLoaded: '',
+  remarks: ''
+};
 
 const mockData = [
   {
@@ -21,153 +40,121 @@ const mockData = [
     dateLoaded: '2023-09-12',
     remarks: 'Fragile'
   },
-  // Add more sample data here if needed
+  // Additional mock data as needed
 ];
 
-function InputForm() {
-  const [formData, setFormData] = useState({
-    trackingNumber: '',
-    date: '',
-    senderName: '',
-    SendercontactNumber: '',
-    recieverName: '',
-    ReceivercontactNumber: '',
-    senderEmail: '',
-    receiverEmail: '',
-    items: '',
-    senderAddress: '',
-    receiverAddress: '',
-    noOfBox: '',
-    boxSize: '',
-    noOfKg: '',
-    dateLoaded: '',
-    remarks: ''
-  });
+function InputForm({ onClose }) {
+  const [formData, setFormData] = useState(initialFormState);
+  const [data, setData] = useState(mockData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [trackingSearch, setTrackingSearch] = useState('');
+  const [error, setError] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const [data, setData] = useState(mockData); // Storing mock data in state for CRUD operations
-  const [isEditing, setIsEditing] = useState(false); // Whether we are editing an existing entry
-  const [trackingSearch, setTrackingSearch] = useState(''); // For searching tracking number
-  const [error, setError] = useState(''); // Error message for not found tracking number
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); // Show delete confirmation dialog
-
-  // Handle Search for a tracking number
+  // Handle search by tracking number
   const handleSearch = (e) => {
     e.preventDefault();
-    const foundData = data.find((data) => data.trackingNumber === trackingSearch);
-
+    const foundData = data.find((item) => item.trackingNumber === trackingSearch);
     if (foundData) {
       setFormData(foundData);
       setIsEditing(true);
-      setError(''); // Clear error message
+      setError('');
     } else {
       setError('Tracking number not found');
       setIsEditing(false);
     }
   };
 
-  // Handle Input Change
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value
-  //   });
-  // };
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
 
-  // Handle Submit for form
+  // Handle form submission for adding or updating data
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
-      alert('Customer details updated successfully!');
-      // Update the state (mock data) after editing
       setData(data.map(item => item.trackingNumber === formData.trackingNumber ? formData : item));
+      alert('Customer details updated successfully!');
     } else {
+      setData([...data, formData]);
       alert('Customer details added successfully!');
-      setData([...data, formData]); // Add new data
     }
-    console.log(formData);
+    setFormData(initialFormState);
+    setIsEditing(false);
   };
 
-  // Handle Delete
+  // Handle deletion of an entry
   const handleDelete = () => {
-    const updatedData = data.filter(item => item.trackingNumber !== formData.trackingNumber);
-    setData(updatedData); // Update data state after deletion
-    setFormData({
-      trackingNumber: '',
-      date: '',
-      senderName: '',
-      SendercontactNumber: '',
-      recieverName: '',
-      ReceivercontactNumber: '',
-      senderEmail: '',
-      receiverEmail: '',
-      items: '',
-      senderAddress: '',
-      receiverAddress: '',
-      noOfBox: '',
-      boxSize: '',
-      noOfKg: '',
-      dateLoaded: '',
-      remarks: ''
-    });
-    setIsEditing(false); // Reset editing mode
-    setShowDeleteConfirm(false); // Hide delete confirmation
+    setData(data.filter(item => item.trackingNumber !== formData.trackingNumber));
+    setFormData(initialFormState);
+    setIsEditing(false);
+    setShowDeleteConfirm(false);
     alert('Tracking number deleted successfully!');
   };
 
-  const confirmDelete = () => {
-    setShowDeleteConfirm(true); // Show delete confirmation
-  };
-
-  const cancelDelete = () => {
-    setShowDeleteConfirm(false); // Hide delete confirmation
-  };
-
   return (
-    <div className="container py-4 text-blue">
-      <h1 className="text-center mb-4">{isEditing ? 'Edit Customer Details' : 'Add Entry Form'}</h1>
+    <div className="container py-4">
+      <h1 className="text-center mb-4"> Edit Customer Details </h1>
 
       {/* Search Form */}
-      <div className="mb-4">
-        <form onSubmit={handleSearch} className="d-flex justify-content-center">
-          <input
-            type="text"
-            className="form-control w-50"
-            placeholder="Enter tracking number to search"
-            value={trackingSearch}
-            onChange={(e) => setTrackingSearch(e.target.value)}
-          />
-          <button type="submit" className="btn btn-primary ms-2">Search</button>
-        </form>
-        {error && <p className="text-danger text-center mt-2">{error}</p>}
-      </div>
+      <form onSubmit={handleSearch} className="mb-4 d-flex justify-content-center">
+        <input
+          type="text"
+          className="form-control w-50"
+          placeholder="Enter tracking number to search"
+          value={trackingSearch}
+          onChange={(e) => setTrackingSearch(e.target.value)}
+        />
+        <button type="submit" className="btn btn-primary ms-2">Search</button>
+      </form>
+      {error && <p className="text-danger text-center">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-sm">
-        {/* Form fields for tracking data */}
-        {/* ... same code ... */}
+      {/* Input Form */}
+      <form onSubmit={handleSubmit} className="text-dark bg-light p-4 rounded shadow-sm">
+        <div className="row">
+          {Object.keys(initialFormState).map((field, index) => (
+            <div className="col-md-6 mb-3" key={index}>
+              <label className="form-label" htmlFor={field}>{field.replace(/([A-Z])/g, ' $1')}</label>
+              <input
+                type="text"
+                id={field}
+                name={field}
+                className="form-control"
+                value={formData[field] || ''}
+                onChange={handleChange}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="text-center">
+          <button type="submit" className="btn btn-success me-2">{isEditing ? 'Update' : 'Add Entry'}</button>
+          {isEditing && (
+            <button type="button" className="btn btn-danger" onClick={() => setShowDeleteConfirm(true)}>
+              Delete
+            </button>
+          )}
+        </div>
       </form>
 
-      {/* Delete Button and Confirmation Dialog */}
-      {isEditing && (
-        <div className="text-center mt-4">
-          <button className="btn btn-danger" onClick={confirmDelete}>Delete</button>
-        </div>
-      )}
-
-      {/* Delete Confirmation Prompt */}
+      {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="modal show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Delete</h5>
-                <button type="button" className="btn-close" onClick={cancelDelete}></button>
+                <button type="button" className="btn-close" onClick={() => setShowDeleteConfirm(false)}></button>
               </div>
               <div className="modal-body">
                 <p>Are you sure you want to delete this tracking number?</p>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={cancelDelete}>Cancel</button>
+                <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
                 <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
               </div>
             </div>
@@ -178,9 +165,8 @@ function InputForm() {
   );
 }
 
-// Add PropTypes validation
 InputForm.propTypes = {
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func
 };
 
 export default InputForm;

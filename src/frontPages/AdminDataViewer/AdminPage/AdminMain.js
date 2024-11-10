@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../AdminComponents/sidebar.js';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
+//import CreateTrackingData from '../AdminComponents/sidebar/CreateTrackingData.js';
 
 function AdminPage() {
   const contentStyle = {
@@ -16,12 +17,11 @@ function AdminPage() {
       <div className="col-12 col-md-3 col-lg-2 p-0">
         <Sidebar />
       </div>
-
       {/* Main content area with gradient background */}
       <div className="col-12 col-md-9 col-lg-10 p-0">
         <div style={contentStyle}>
-          {/* Outlet component renders the child routes */}
           <Outlet />
+
         </div>
       </div>
     </div>
