@@ -1,172 +1,182 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../../../components/supabase/config.js';
 
-const initialFormState = {
-  trackingNumber: '',
-  date: '',
-  senderName: '',
-  SendercontactNumber: '',
-  recieverName: '',
-  ReceivercontactNumber: '',
-  senderEmail: '',
-  receiverEmail: '',
-  items: '',
-  senderAddress: '',
-  receiverAddress: '',
-  noOfBox: '',
-  boxSize: '',
-  noOfKg: '',
-  dateLoaded: '',
-  remarks: ''
-};
+const TrackingTable = () => {
+  const [trackingNumbers, setTrackingNumbers] = useState([]);
+  const [allTrackingNumbers, setAllTrackingNumbers] = useState([]);
+  const [newTrackingNumber, setNewTrackingNumber] = useState('');
+  const [commonDate, setCommonDate] = useState('');
+  const [commonStatus, setCommonStatus] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
-const mockData = [
-  {
-    trackingNumber: 'FB24000',
-    date: '2023-09-10',
-    senderName: 'John Doe',
-    SendercontactNumber: '123456789',
-    recieverName: 'Jane Doe',
-    ReceivercontactNumber: '987654321',
-    senderEmail: 'johndoe@example.com',
-    receiverEmail: 'janedoe@example.com',
-    items: 'Electronics',
-    senderAddress: '123 Main St',
-    receiverAddress: '456 Elm St',
-    noOfBox: '2',
-    boxSize: 'Medium',
-    noOfKg: '5',
-    dateLoaded: '2023-09-12',
-    remarks: 'Fragile'
-  },
-  // Additional mock data as needed
-];
+  // Fetch all tracking numbers from the database for dropdown suggestions
+  useEffect(() => {
+    const fetchTrackingNumbers = async () => {
+      const { data, error } = await supabase
+        .from('trackingfbt_audit')
+        .select('tracking_id');
+      if (error) {
+        console.error('Error fetching tracking numbers:', error);
+      } else {
+        setAllTrackingNumbers(data.map(item => item.tracking_id));
+      }
+    };
+    fetchTrackingNumbers();
+  }, []);
 
-function InputForm({ onClose }) {
-  const [formData, setFormData] = useState(initialFormState);
-  const [data, setData] = useState(mockData);
-  const [isEditing, setIsEditing] = useState(false);
-  const [trackingSearch, setTrackingSearch] = useState('');
-  const [error, setError] = useState('');
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // Filter suggestions based on input
+  const handleInputChange = (e) => {
+    const userInput = e.target.value;
+    setNewTrackingNumber(userInput);
+    const filtered = allTrackingNumbers.filter(trackingNumber =>
+      trackingNumber.toLowerCase().includes(userInput.toLowerCase())
+    );
+    setFilteredSuggestions(filtered);
+  };
 
-  // Handle search by tracking number
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const foundData = data.find((item) => item.trackingNumber === trackingSearch);
-    if (foundData) {
-      setFormData(foundData);
-      setIsEditing(true);
-      setError('');
-    } else {
-      setError('Tracking number not found');
-      setIsEditing(false);
+  // Add a new tracking number to the list
+  const addTrackingNumber = (trackingNumber) => {
+    if (trackingNumber && !trackingNumbers.find(item => item.trackingNumber === trackingNumber)) {
+      setTrackingNumbers((prev) => [...prev, { trackingNumber }]);
+      setNewTrackingNumber('');
+      setFilteredSuggestions([]);
     }
   };
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
+  // Handle selection from dropdown
+  const handleSuggestionClick = (suggestion) => {
+    addTrackingNumber(suggestion);
+  };
+
+  // Remove a tracking number from the list
+  const removeTrackingNumber = (index) => {
+    setTrackingNumbers((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle submission to Supabase
+  const handleSubmit = async () => {
+    const { data: maxAuditIdData, error: fetchError } = await supabase
+      .from('trackingfbt_audit')
+      .select('audit_id')
+      .order('audit_id', { ascending: false })
+      .limit(1);
+
+    if (fetchError) {
+      console.error('Error fetching max audit_id:', fetchError);
+      return;
+    }
+
+    let nextAuditId = maxAuditIdData.length > 0 ? maxAuditIdData[0].audit_id + 1 : 1;
+
+    const dataToInsert = trackingNumbers.map(item => ({
+      tracking_id: item.trackingNumber,
+      audit_id: nextAuditId++,
+      date_loaded: commonDate,
+      remarks: commonStatus
     }));
-  };
 
-  // Handle form submission for adding or updating data
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditing) {
-      setData(data.map(item => item.trackingNumber === formData.trackingNumber ? formData : item));
-      alert('Customer details updated successfully!');
+    const { data, error } = await supabase
+      .from('trackingfbt_audit')
+      .insert(dataToInsert)
+      .select();
+
+    if (error) {
+      console.error('Error inserting data:', error);
     } else {
-      setData([...data, formData]);
-      alert('Customer details added successfully!');
+      setSuccessMessage('All entries have been submitted to the database!');
+      setTrackingNumbers([]);
+      setCommonDate('');
+      setCommonStatus('');
     }
-    setFormData(initialFormState);
-    setIsEditing(false);
-  };
-
-  // Handle deletion of an entry
-  const handleDelete = () => {
-    setData(data.filter(item => item.trackingNumber !== formData.trackingNumber));
-    setFormData(initialFormState);
-    setIsEditing(false);
-    setShowDeleteConfirm(false);
-    alert('Tracking number deleted successfully!');
   };
 
   return (
-    <div className="container py-4">
-      <h1 className="text-center mb-4"> Edit Customer Details </h1>
+    <div className="container">
+      <h2>Tracking Table</h2>
 
-      {/* Search Form */}
-      <form onSubmit={handleSearch} className="mb-4 d-flex justify-content-center">
+      {/* Input for adding tracking numbers */}
+      <div className="mb-3">
         <input
           type="text"
-          className="form-control w-50"
-          placeholder="Enter tracking number to search"
-          value={trackingSearch}
-          onChange={(e) => setTrackingSearch(e.target.value)}
+          value={newTrackingNumber}
+          placeholder="Enter or search tracking number"
+          onChange={handleInputChange}
+          className="form-control mb-2"
         />
-        <button type="submit" className="btn btn-primary ms-2">Search</button>
-      </form>
-      {error && <p className="text-danger text-center">{error}</p>}
+        <button onClick={() => addTrackingNumber(newTrackingNumber)} className="btn btn-primary">
+          Add Tracking Number
+        </button>
 
-      {/* Input Form */}
-      <form onSubmit={handleSubmit} className="text-dark bg-light p-4 rounded shadow-sm">
-        <div className="row">
-          {Object.keys(initialFormState).map((field, index) => (
-            <div className="col-md-6 mb-3" key={index}>
-              <label className="form-label" htmlFor={field}>{field.replace(/([A-Z])/g, ' $1')}</label>
-              <input
-                type="text"
-                id={field}
-                name={field}
-                className="form-control"
-                value={formData[field] || ''}
-                onChange={handleChange}
-              />
-            </div>
+        {/* Dropdown Suggestions */}
+        {filteredSuggestions.length > 0 && (
+          <ul className="list-group mt-2">
+            {filteredSuggestions.map((suggestion, index) => (
+              <li key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                className="list-group-item list-group-item-action"
+                style={{ cursor: 'pointer' }}
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Display list of tracking numbers */}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Tracking Number</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {trackingNumbers.map((item, index) => (
+            <tr key={index}>
+              <td>{item.trackingNumber}</td>
+              <td>
+                <button onClick={() => removeTrackingNumber(index)} className="btn btn-danger btn-sm">
+                  Remove
+                </button>
+              </td>
+            </tr>
           ))}
-        </div>
-        <div className="text-center">
-          <button type="submit" className="btn btn-success me-2">{isEditing ? 'Update' : 'Add Entry'}</button>
-          {isEditing && (
-            <button type="button" className="btn btn-danger" onClick={() => setShowDeleteConfirm(true)}>
-              Delete
-            </button>
-          )}
-        </div>
-      </form>
+        </tbody>
+      </table>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="modal show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Confirm Delete</h5>
-                <button type="button" className="btn-close" onClick={() => setShowDeleteConfirm(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to delete this tracking number?</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
-                <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Common Date and Status Inputs */}
+      <div className="mb-3">
+        <label>Date</label>
+        <input
+          type="date"
+          value={commonDate}
+          onChange={(e) => setCommonDate(e.target.value)}
+          className="form-control"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label>Status (Remarks)</label>
+        <input
+          type="text"
+          value={commonStatus}
+          placeholder="Enter status (e.g., Delivered, In Transit)"
+          onChange={(e) => setCommonStatus(e.target.value)}
+          className="form-control"
+        />
+      </div>
+
+      {/* Submit Button */}
+      <button onClick={handleSubmit} className="btn btn-success">
+        Submit to Database
+      </button>
+
+      {/* Success Message */}
+      {successMessage && <p className="text-success mt-3">{successMessage}</p>}
     </div>
   );
-}
-
-InputForm.propTypes = {
-  onClose: PropTypes.func
 };
 
-export default InputForm;
+export default TrackingTable;

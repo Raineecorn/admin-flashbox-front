@@ -30,10 +30,11 @@ function App() {
             
             {/* Admin Dashboard Routes */}
             <Route path="/" element={<AdminLanding />}>
-              <Route index element={<CreateTrackingData />} /> {/* Default content for Admin Landing */}
+              <Route index element={<CreateTrackingData />} /> 
               <Route path="add-customer" element={<CreateTrackingData />} />
               <Route path="update-tracking" element={<UpdateTracking />} />
               <Route path="customer-lists" element={<CustomerLists />} />
+
               <Route path="update-page" element={<UpdatePage />} />
               <Route path="update-status" element={<UpdateTrackingStatus />} />
               <Route path="sample" element={<TrackingTable /> } />

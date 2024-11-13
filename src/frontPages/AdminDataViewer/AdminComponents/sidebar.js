@@ -46,8 +46,8 @@ function Sidebar({ openSidebarToggle }) {
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/update-status" className="text-white d-flex align-items-center">
-            <BsMenuButtonWideFill className="me-2" /> Tracking Status Update
+          <Link to="/update-page" className="text-white d-flex align-items-center">
+            <BsMenuButtonWideFill className="me-2" /> Update Customer Data
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>

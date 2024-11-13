@@ -15,6 +15,7 @@ const TrackingTable = () => {
     }
   };
 
+  
   // Remove a tracking number from the list
   const removeTrackingNumber = (index) => {
     setTrackingNumbers((prev) => prev.filter((_, i) => i !== index));
