@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-function TableEntry({ data, formatDate }) {
+function TableEntry({ data, formatDate, onEdit, onDelete }) {
+    const [expandedRowId, setExpandedRowId] = useState(null);
+
+    // Default formatDate function
+    formatDate = formatDate || ((dateString) => {
+        return new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    });
+
+    const toggleRow = (id) => {
+        setExpandedRowId(expandedRowId === id ? null : id);
+    };
+
     return (
         <table className="table table-striped table-hover">
             <thead className="thead-dark">
@@ -22,44 +33,53 @@ function TableEntry({ data, formatDate }) {
             </thead>
             <tbody>
                 {data.map((entry, index) => (
-                    <tr key={entry.id}>
-                        <td>{index + 1}</td>
-                        <td>{entry.id}</td>
-                        <td>{entry.sender}</td>
-                        <td>{entry.receiver}</td>
-                        <td>{entry.items}</td>
-                        <td>{formatDate(entry.date_ordered)}</td>
-                        <td>{entry.no_of_box}</td>
-                        <td>{entry.box_size}</td>
-                        <td>{entry.weight}</td>
-                        <td>{entry.address}</td>
-                        <td>{entry.destination}</td>
-                        <td>{formatDate(entry.date_loaded)}</td>
-                    </tr>
+                    <React.Fragment key={entry.id}>
+                        <tr onClick={() => toggleRow(entry.id)}>
+                            <td>{index + 1}</td>
+                            <td>{entry.id}</td>
+                            <td>{entry.sender}</td>
+                            <td>{entry.receiver}</td>
+                            <td>{entry.items}</td>
+                            <td>{formatDate(entry.date_ordered)}</td>
+                            <td>{entry.no_of_box}</td>
+                            <td>{entry.box_size}</td>
+                            <td>{entry.weight}</td>
+                            <td>{entry.address}</td>
+                            <td>{entry.destination}</td>
+                            <td>{formatDate(entry.date_loaded)}</td>
+                        </tr>
+                        {expandedRowId === entry.id && (
+                            <tr key={`actions-${entry.id}`}>
+                                <td colSpan={12}>
+                                    <button className="btn btn-sm btn-primary" onClick={(e) => { e.stopPropagation(); onEdit(entry); }}>Edit</button>
+                                    <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); onDelete(entry.id); }}>Delete</button>
+                                </td>
+                            </tr>
+                        )}
+                    </React.Fragment>
                 ))}
             </tbody>
         </table>
     );
 }
 
-// Adding PropTypes validation based on your Supabase schema
 TableEntry.propTypes = {
-    data: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired, // tracking ID
-            sender: PropTypes.string, // Optional, can be empty
-            receiver: PropTypes.string, // Optional
-            items: PropTypes.string, // Optional
-            date_ordered: PropTypes.string, // Optional date as string
-            no_of_box: PropTypes.number, // Number of boxes
-            box_size: PropTypes.string, // Optional, can be empty
-            weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // Optional
-            address: PropTypes.string, // Optional, could be null
-            destination: PropTypes.string, // Optional, could be null
-            date_loaded: PropTypes.string, // Optional date as string
-        })
-    ).isRequired,
-    formatDate: PropTypes.func.isRequired, // Ensure formatDate is passed as a function
+    data: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        sender: PropTypes.string,
+        receiver: PropTypes.string,
+        items: PropTypes.string,
+        date_ordered: PropTypes.string,
+        no_of_box: PropTypes.number,
+        box_size: PropTypes.string,
+        weight: PropTypes.string,
+        address: PropTypes.string,
+        destination: PropTypes.string,
+        date_loaded: PropTypes.string,
+    })).isRequired,
+    formatDate: PropTypes.func,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 };
 
 export default TableEntry;

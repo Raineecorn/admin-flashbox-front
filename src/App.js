@@ -4,7 +4,9 @@ import NavBar from './components/Header/NavBar';
 import Footer from './components/Footer/Footer';
 import './App.css';
 
-// Import Pages
+import { AuthProvider } from './context/AuthContext'; // Import the Auth context
+import ProtectedRoute from './utils/ProtectedRoute'; // Import the ProtectedRoute component
+
 import AdminLanding from './frontPages/AdminDataViewer/AdminPage/AdminMain';
 import AdminLogin from './frontPages/AdminDataViewer/landing-adminPage';
 import UpdateTracking from './frontPages/AdminDataViewer/AdminComponents/sidebar/UpdateTrackingData';
@@ -20,30 +22,39 @@ import theme from './components/theme/colorTheme';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <NavBar />
-        <div className="App">
-          <Routes>
-            {/* Admin Login Route */}
-            <Route path="/login-admin" element={<AdminLogin />} />
-            
-            {/* Admin Dashboard Routes */}
-            <Route path="/" element={<AdminLanding />}>
-              <Route index element={<CreateTrackingData />} /> 
-              <Route path="add-customer" element={<CreateTrackingData />} />
-              <Route path="update-tracking" element={<UpdateTracking />} />
-              <Route path="customer-lists" element={<CustomerLists />} />
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <NavBar />
+          <div className="App">
+            <Routes>
+              {/* Public Route */}
+              <Route path="/login-admin" element={<AdminLogin />} />
 
-              <Route path="update-page" element={<UpdatePage />} />
-              <Route path="update-status" element={<UpdateTrackingStatus />} />
-              <Route path="sample" element={<TrackingTable /> } />
-            </Route>
-          </Routes>
-        </div>
-        <Footer />
-      </Router>
-    </ThemeProvider>
+              {/* Protected Routes for Admin */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AdminLanding />
+                  </ProtectedRoute>
+                }
+              >
+                {/* Nested Admin Dashboard Routes */}
+                <Route index element={<CreateTrackingData />} /> {/* Default route for /admin */}
+                <Route path="add-customer" element={<CreateTrackingData />} /> {/* /admin/add-customer */}
+                <Route path="update-tracking" element={<UpdateTracking />} /> {/* /admin/update-tracking */}
+                <Route path="customer-lists" element={<CustomerLists />} /> {/* /admin/customer-lists */}
+                <Route path="update-page" element={<UpdatePage />} /> {/* /admin/update-page */}
+                <Route path="tracking-status" element={<UpdateTrackingStatus />} /> {/* /admin/update-status */}
+                <Route path="skibs" element={<TrackingTable />} /> {/* /admin/sample */}
+              </Route>
+            </Routes>
+          </div>
+          <Footer />
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

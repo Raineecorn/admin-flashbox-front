@@ -1,170 +1,98 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import PropTypes from 'prop-types';
+import { supabase } from '../../../../components/supabase/config'; // Ensure this path is correct
 
 function CreateTrackingData() {
   const [formData, setFormData] = useState({
-    trackingNumber: '',
-    date: '',
-    senderName: '',
-    SendercontactNumber: '',
-    recieverName: '',
-    ReceivercontactNumber: '',
-    senderEmail: '',
-    receiverEmail: '',
+    id: '',
+    sender: '',
+    receiver: '',
     items: '',
-    senderAddress: '',
-    receiverAddress: '',
-    noOfBox: '',
-    boxSize: '',
-    noOfKg: '',
-    dateLoaded: '',
-    remarks: ''
+    date_ordered: '',
+    no_of_box: '',
+    box_size: '',
+    weight: '',
+    address: '',
+    destination: '',
+    date_loaded: ''
   });
-
-  const [data, setData] = useState([]); // Store the added entries
 
   // Handle Input Change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prevFormData => ({
+      ...prevFormData,
       [name]: value
-    });
+    }));
   };
 
   // Handle Submit for form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Customer details added successfully!');
-    setData([...data, formData]); // Add new data
-    setFormData({
-      trackingNumber: '',
-      date: '',
-      senderName: '',
-      SendercontactNumber: '',
-      recieverName: '',
-      ReceivercontactNumber: '',
-      senderEmail: '',
-      receiverEmail: '',
-      items: '',
-      senderAddress: '',
-      receiverAddress: '',
-      noOfBox: '',
-      boxSize: '',
-      noOfKg: '',
-      dateLoaded: '',
-      remarks: ''
-    }); // Clear form after submission
+    const { data, error } = await supabase
+      .from('trackingfbt')
+      .insert([formData]);
+
+    if (error) {
+      alert('Failed to add data: ' + error.message);
+    } else {
+      alert('Customer details added successfully!');
+      setFormData({
+        id: '',
+        sender: '',
+        receiver: '',
+        items: '',
+        date_ordered: '',
+        no_of_box: '',
+        box_size: '',
+        weight: '',
+        address: '',
+        destination: '',
+        date_loaded: ''
+      }); // Clear form after submission
+    }
   };
 
   return (
     <div className="container py-4 ">
       <h1 className="text-center mb-4">Add Entry Form</h1>
-
       <form onSubmit={handleSubmit} className="text-dark bg-light p-4 rounded shadow-sm">
         <div className="mb-3">
-          <label htmlFor="trackingNumber" className="form-label">Tracking Number</label>
+          <label htmlFor="id" className="form-label">Tracking Number</label>
           <input
             type="text"
-            id="trackingNumber"
-            name="trackingNumber"
-            value={formData.trackingNumber}
+            id="id"
+            name="id"
+            value={formData.id}
             onChange={handleChange}
             className="form-control"
             required
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="date" className="form-label">Date</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="senderName" className="form-label">Sender Name</label>
+          <label htmlFor="sender" className="form-label">Sender</label>
           <input
             type="text"
-            id="senderName"
-            name="senderName"
-            value={formData.senderName}
+            id="sender"
+            name="sender"
+            value={formData.sender}
             onChange={handleChange}
             className="form-control"
             required
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="SendercontactNumber" className="form-label">Sender Contact Number</label>
+          <label htmlFor="receiver" className="form-label">Receiver</label>
           <input
             type="text"
-            id="SendercontactNumber"
-            name="SendercontactNumber"
-            value={formData.SendercontactNumber}
+            id="receiver"
+            name="receiver"
+            value={formData.receiver}
             onChange={handleChange}
             className="form-control"
             required
           />
         </div>
-
-        <div className="mb-3">
-          <label htmlFor="recieverName" className="form-label">Receiver Name</label>
-          <input
-            type="text"
-            id="recieverName"
-            name="recieverName"
-            value={formData.recieverName}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="ReceivercontactNumber" className="form-label">Receiver Contact Number</label>
-          <input
-            type="text"
-            id="ReceivercontactNumber"
-            name="ReceivercontactNumber"
-            value={formData.ReceivercontactNumber}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="senderEmail" className="form-label">Sender Email</label>
-          <input
-            type="email"
-            id="senderEmail"
-            name="senderEmail"
-            value={formData.senderEmail}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="receiverEmail" className="form-label">Receiver Email</label>
-          <input
-            type="email"
-            id="receiverEmail"
-            name="receiverEmail"
-            value={formData.receiverEmail}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
         <div className="mb-3">
           <label htmlFor="items" className="form-label">Items</label>
           <input
@@ -177,103 +105,91 @@ function CreateTrackingData() {
             required
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="senderAddress" className="form-label">Sender Address</label>
-          <input
-            type="text"
-            id="senderAddress"
-            name="senderAddress"
-            value={formData.senderAddress}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="receiverAddress" className="form-label">Receiver Address</label>
-          <input
-            type="text"
-            id="receiverAddress"
-            name="receiverAddress"
-            value={formData.receiverAddress}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="noOfBox" className="form-label">Number of Boxes</label>
-          <input
-            type="number"
-            id="noOfBox"
-            name="noOfBox"
-            value={formData.noOfBox}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="boxSize" className="form-label">Box Size</label>
-          <input
-            type="text"
-            id="boxSize"
-            name="boxSize"
-            value={formData.boxSize}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="noOfKg" className="form-label">Number of Kilograms</label>
-          <input
-            type="number"
-            id="noOfKg"
-            name="noOfKg"
-            value={formData.noOfKg}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="dateLoaded" className="form-label">Date Loaded</label>
+          <label htmlFor="date_ordered" className="form-label">Date Ordered</label>
           <input
             type="date"
-            id="dateLoaded"
-            name="dateLoaded"
-            value={formData.dateLoaded}
+            id="date_ordered"
+            name="date_ordered"
+            value={formData.date_ordered}
             onChange={handleChange}
             className="form-control"
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="remarks" className="form-label">Remarks</label>
-          <textarea
-            id="remarks"
-            name="remarks"
-            value={formData.remarks}
+          <label htmlFor="no_of_box" className="form-label">Number of Boxes</label>
+          <input
+            type="number"
+            id="no_of_box"
+            name="no_of_box"
+            value={formData.no_of_box}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="box_size" className="form-label">Box Size</label>
+          <input
+            type="text"
+            id="box_size"
+            name="box_size"
+            value={formData.box_size}
             onChange={handleChange}
             className="form-control"
           />
         </div>
-
+        <div className="mb-3">
+          <label htmlFor="weight" className="form-label">Weight</label>
+          <input
+            type="text"
+            id="weight"
+            name="weight"
+            value={formData.weight}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label">Address</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="destination" className="form-label">Destination</label>
+          <input
+            type="text"
+            id="destination"
+            name="destination"
+            value={formData.destination}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="date_loaded" className="form-label">Date Loaded</label>
+          <input
+            type="date"
+            id="date_loaded"
+            name="date_loaded"
+            value={formData.date_loaded}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
         <button type="submit" className="btn btn-primary">Add Data</button>
       </form>
     </div>
   );
 }
-
-// Correct PropTypes assignment
-CreateTrackingData.propTypes = {
-  onClose: PropTypes.func
-};
 
 export default CreateTrackingData;

@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 import { Link } from 'react-router-dom';
-import { BsGrid1X2Fill, BsPersonAdd, BsPeopleFill, BsListCheck, BsMenuButtonWideFill } from 'react-icons/bs';
+import { BsPersonAdd, BsPeopleFill, BsMenuButtonWideFill } from 'react-icons/bs';
+import { IoIosExit } from "react-icons/io";
+import { LuFileSearch } from "react-icons/lu";
 import { GrDocumentUpdate } from "react-icons/gr";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 
@@ -25,11 +27,7 @@ function Sidebar({ openSidebarToggle }) {
   return (
     <aside id="sidebar" className={`d-flex flex-column ${openSidebarToggle ? 'sidebar-responsive' : ''}`} style={sidebarStyles}>
       <ul className="list-unstyled p-0">
-        <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/admindashboard" className="text-white d-flex align-items-center">
-            <BsGrid1X2Fill className="me-2" /> Dashboard
-          </Link>
-        </li>
+        
         <li className="sidebar-list-item" style={listItemStyles}>
           <Link to="/add-customer" className="text-white d-flex align-items-center">
             <BsPersonAdd className="me-2" /> Add Customer
@@ -51,8 +49,14 @@ function Sidebar({ openSidebarToggle }) {
           </Link>
         </li>
         <li className="sidebar-list-item" style={listItemStyles}>
-          <Link to="/sample" className="text-white d-flex align-items-center">
-            <BsListCheck className="me-2" /> Tracking Inventory
+          <Link to="/tracking-status" className="text-white d-flex align-items-center">
+            <LuFileSearch className="me-2" /> Check Tracking Status
+          </Link>
+        </li>
+
+        <li className="sidebar-list-item" style={listItemStyles}>
+          <Link to="/login-admin" className="text-white d-flex align-items-center">
+            <IoIosExit className="me-2" /> Logout
           </Link>
         </li>
       </ul>
